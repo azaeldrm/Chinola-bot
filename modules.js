@@ -24,3 +24,47 @@ exports.startCountdown = function (seconds, msg) {
   }, 1000);
 
 };
+
+exports.weatherByCountry = function (country, msg) {
+
+  var request = require('request');
+  var config = require('./config');
+
+  var param = {
+    type: {
+      'city': 'q',
+      'cityID': 'id',
+      'coord': [null,null]
+      // 'coord': {
+      //   'lat': null,
+      //   'lon': null
+      // }
+    },
+    city: 'London',
+    api_key: config.api_key,
+    url: 'https://api.openweathermap.org/data/2.5/weather'
+  };
+
+  var options = {
+    url: `${param.url}?q=${param.city}&appid=${param.api_key}`,
+    method: 'GET',
+    json: true,
+  };
+
+  request(options, function (error, response, body) {
+    console.log('\nstatusCode:', response && response.statusCode);
+    console.log('')
+    if (error) {
+      console.log('error:', error);
+    } else {
+      // console.log(
+      msg.channel.send(
+  `Weather status in ${body.name}
+  Weather forecast: ${body.weather[0].description}
+  Temperature: ${(body.main.temp - 273.15).toFixed(2)}°C
+  Humidity: ${(body.main.humidity)}`);
+      // console.log('body:', body);
+    }
+  });
+
+};

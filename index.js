@@ -27,12 +27,18 @@ client.on('message', (msg) => {
   }
 
   if (msg.content === '!timer') {
-
     const secs = 10;
     const startTime = Moment();
     const endTime = startTime.clone().add(secs, 'seconds');
     msg.channel.send(`You have until ` + endTime.format('hh:mm:ss') + ` (${secs} seconds) to join!`);
     modules.startCountdown(secs, msg);
+  }
+
+  if (msg.content === '!weather') {
+    const country = 'London';
+    modules.weatherByCountry(country, msg);
+    // Add an ability for whoever writes !weather to add its country there
+    // instead of listening again for another message (easier)
   }
 
   if (msg.content === '!web') {
