@@ -25,30 +25,35 @@ exports.startCountdown = function (seconds, msg) {
 
 };
 
-exports.weatherByCountry = function (country, msg) {
+exports.weatherByRequest = function (input, msg) {
+
+// In this example we need to automate the input (country, but needs to be
+// changed to 'input', and use its information to determine which param.type
+// it is, and from there adjust the url options accordingly.)
 
   var request = require('request');
   var config = require('./config');
 
   var param = {
-    type: {
-      'city': 'q',
-      'cityID': 'id',
-      'coord': [null,null]
-      // 'coord': {
-      //   'lat': null,
-      //   'lon': null
-      // }
+    type: null,
+    units: {
+      type: 'imperial',
+      symbol: 'F'
     },
-    city: 'London',
     api_key: config.api_key,
     url: 'https://api.openweathermap.org/data/2.5/weather'
   };
 
+  if (Number.isInteger(input) === false) {
+    param.type = 'q';
+  } else {
+    param.type = 'zip';
+  };
+
   var options = {
-    url: `${param.url}?q=${param.city}&appid=${param.api_key}`,
+    url: `${param.url}?${param.type}=${input}&units=${param.units.type}&appid=${param.api_key}`,
     method: 'GET',
-    json: true,
+    json: true
   };
 
   request(options, function (error, response, body) {
@@ -57,11 +62,11 @@ exports.weatherByCountry = function (country, msg) {
     if (error) {
       console.log('error:', error);
     } else {
-      // console.log(
+      console.log(body)
       msg.channel.send(
   `Weather status in ${body.name}
   Weather forecast: ${body.weather[0].description}
-  Temperature: ${(body.main.temp - 273.15).toFixed(2)}°C
+  Temperature: ${body.main.temp.toFixed(2)}°${param.units.symbol}
   Humidity: ${(body.main.humidity)}`);
       // console.log('body:', body);
     }

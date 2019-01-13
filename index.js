@@ -35,8 +35,8 @@ client.on('message', (msg) => {
   }
 
   if (msg.content === '!weather') {
-    const country = 'London';
-    modules.weatherByCountry(country, msg);
+    const city = 33578;
+    modules.weatherByRequest(city, msg);
     // Add an ability for whoever writes !weather to add its country there
     // instead of listening again for another message (easier)
   }
